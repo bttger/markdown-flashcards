@@ -74,10 +74,11 @@ func (s *Session) Start() {
 // isDue Checks if a card is due. Returns two values: the first is true if the card is due, the second is true if the
 // card is due within the next maxFutureDaysDue days.
 func isDue(c Card) (due, nearDue bool) {
-	today := time.Now()
-	if today.After(c.Due) {
+	y, m, d := time.Now().Date()
+	today := time.Date(y, m, d, 0, 0, 0, 0, time.UTC)
+	if today.After(c.Due) || today.Equal(c.Due) {
 		due = true
-	} else if today.After(c.Due.AddDate(0, 0, -maxFutureDaysDue)) {
+	} else if nearDay := c.Due.AddDate(0, 0, -maxFutureDaysDue); today.After(nearDay) || today.Equal(nearDay) {
 		nearDue = true
 	}
 	return due, nearDue
@@ -105,7 +106,7 @@ func (s *Session) assembleStudyQueue() {
 				nearDueQueue = append(nearDueQueue, c)
 			}
 		}
-		if s.NumberCards > 0 && uint(len(s.studyQueue)) >= s.NumberCards {
+		if s.NumberCards > 0 && uint(len(s.studyQueue)) == s.NumberCards {
 			// Break the loop when the number of cards to study is reached.
 			break
 		}
