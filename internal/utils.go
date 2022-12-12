@@ -9,7 +9,16 @@ import (
 
 // ClearConsole Moves the cursor to the home position (0,0) and erases everything from cursor to end of screen.
 func ClearConsole() {
-	fmt.Print("\033[H\033[0J")
+	if os.Getenv("DEBUG") != "true" {
+		fmt.Print("\033[H\033[0J")
+	}
+}
+
+// ScrollDownFake scrolls down by printing newlines
+func ScrollDownFake() {
+	for i := 0; i < 60; i++ {
+		fmt.Println()
+	}
 }
 
 // ScrollDown Scrolls down until the cursor is at the top of the screen.
@@ -17,7 +26,7 @@ func ClearConsole() {
 // https://pkg.go.dev/github.com/pkg/term/termios#Tcsetattr
 // https://en.wikipedia.org/wiki/ANSI_escape_code
 // TODO flags are missing
-func ScrollDown() {
+func scrollDown() {
 	var input string
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Print("\033[6n")
@@ -34,4 +43,10 @@ func ScrollDown() {
 	col = strings.Split(col, "R")[0]
 	fmt.Println(row, col)
 	fmt.Print("\033[4S")
+}
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
 }

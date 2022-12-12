@@ -10,12 +10,9 @@ import (
 
 const defaultNumberCards = 20
 
-var boxIntervals = []int{1, 3, 7, 15, 30}
-
 func main() {
 	args := os.Args[1:]
-	session := internal.Session{}
-	session.NumberCards = defaultNumberCards
+	session := internal.Session{NumberCards: defaultNumberCards}
 
 	readOptArg := false
 	for i, arg := range args {
@@ -47,22 +44,24 @@ func main() {
 		case "-o", "--show-category":
 			session.ShowCategory = true
 		case "-c", "--category":
-			session.ListCategories = true
+			session.ChooseCategories = true
 			readOptArg = true
 		case "-t", "--test":
 			session.TestMode = true
+			session.NumberCards = 0
 			readOptArg = true
 		case "-n", "--number":
+			session.NumberCards = defaultNumberCards
 			readOptArg = true
 		default:
 			if readOptArg && i != len(args)-1 {
 				switch args[i-1] {
 				case "-c", "--category":
-					session.ListCategories = false
+					session.ChooseCategories = false
 					session.Category = arg
 				case "-n", "--number", "-t", "--test":
 					n, err := strconv.Atoi(arg)
-					if err != nil {
+					if err != nil || n < 0 {
 						fmt.Println("Invalid number of flashcards specified.")
 						return
 					}
@@ -70,21 +69,25 @@ func main() {
 				}
 				readOptArg = false
 			} else {
-				session.File = internal.File{Path: arg, BoxIntervals: boxIntervals}
+				session.File = internal.NewFile(arg)
 			}
 		}
-	}
-
-	if len(session.File.Path) == 0 {
-		fmt.Println("No file specified.")
-		return
 	}
 
 	err := session.ReadFile()
 	if err != nil {
 		panic(err)
 	}
-	out, err := json.MarshalIndent(session, "", "  ")
-	fmt.Println(string(out))
-	// TODO check if we need to interactively choose a category
+
+	if os.Getenv("DEBUG") == "true" {
+		out, _ := json.MarshalIndent(session, "", "  ")
+		fmt.Println(string(out))
+	}
+
+	if session.ChooseCategories && session.Category == "" {
+		session.ChooseCategory()
+	}
+
+	internal.ScrollDownFake()
+	session.Start()
 }
