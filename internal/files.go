@@ -115,5 +115,4 @@ func (s *Session) ChooseCategory() {
 		}
 	}
 	s.Category = categories[choice-1]
-	fmt.Println("Your today's session covers:", s.Category)
 }
