@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/bttger/markdown-flashcards/internal"
 	"os"
@@ -80,8 +79,7 @@ func main() {
 	}
 
 	if os.Getenv("DEBUG") == "true" {
-		out, _ := json.MarshalIndent(session, "", "  ")
-		fmt.Println(string(out))
+		internal.PrintJSON(session)
 	}
 
 	if session.ChooseCategories && session.Category == "" {

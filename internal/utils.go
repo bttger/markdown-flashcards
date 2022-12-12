@@ -2,6 +2,7 @@ package internal
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -23,8 +24,8 @@ func ScrollDownFake() {
 
 // ScrollDown Scrolls down until the cursor is at the top of the screen.
 // https://stackoverflow.com/questions/67212319/ansi-escape-code-csi-6n-always-returns-column-1
-// https://pkg.go.dev/github.com/pkg/term/termios#Tcsetattr
 // https://en.wikipedia.org/wiki/ANSI_escape_code
+// https://pkg.go.dev/github.com/pkg/term/termios#Tcsetattr
 // TODO flags are missing
 func scrollDown() {
 	var input string
@@ -49,4 +50,9 @@ func check(e error) {
 	if e != nil {
 		panic(e)
 	}
+}
+
+func PrintJSON[T any](v T) {
+	out, _ := json.MarshalIndent(v, "", "  ")
+	fmt.Println(string(out))
 }

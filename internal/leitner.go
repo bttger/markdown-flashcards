@@ -184,7 +184,7 @@ func (s *Session) updateCard(c *Card, difficulty float32) {
 			c.Box++
 		}
 		y, m, d := time.Now().Date()
-		daysInFuture := int(float32(s.File.BoxIntervals[c.Box-1]) * difficulty)
+		daysInFuture := int(float32(s.File.BoxIntervals[c.Box]) * difficulty)
 		if daysInFuture == 0 {
 			// Make sure that the card is due at least one day in the future if it was correctly remembered.
 			daysInFuture = 1
