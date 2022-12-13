@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -52,7 +53,31 @@ func check(e error) {
 	}
 }
 
+// PrintJSON pretty prints any struct as JSON
 func PrintJSON[T any](v T) {
 	out, _ := json.MarshalIndent(v, "", "  ")
 	fmt.Println(string(out))
+}
+
+// ReadNumberInput reads a number from standard input. The number must be within i and j. If it is not, it will retry.
+func ReadNumberInput(i, j int) int {
+	res := i - 1
+	scanner := bufio.NewScanner(os.Stdin)
+	for res < i || res > j {
+		scanner.Scan()
+		in := scanner.Text()
+		nr, err := strconv.Atoi(in)
+		if err != nil || nr < i || nr > j {
+			fmt.Print("Please enter a number: ")
+			continue
+		}
+		res = nr
+	}
+	return res
+}
+
+// ReadEnterInput Blocks until the user enters a newline.
+func ReadEnterInput() {
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
 }

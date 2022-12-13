@@ -106,13 +106,8 @@ func (s *Session) ChooseCategory() {
 	for i, c := range categories {
 		fmt.Printf("(%d) %s\n", i+1, c)
 	}
-	choice := 0
-	for choice < 1 || choice > len(categories) {
-		fmt.Print("Your choice: ")
-		_, err := fmt.Scanln(&choice)
-		if err != nil {
-			fmt.Println("Please enter a number.")
-		}
-	}
+
+	fmt.Print("Your choice: ")
+	choice := ReadNumberInput(1, len(categories))
 	s.Category = categories[choice-1]
 }

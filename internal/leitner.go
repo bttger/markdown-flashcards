@@ -149,15 +149,12 @@ func (s *Session) flashNextCard() (c *Card, difficulty float32) {
 	fmt.Printf("\n\n%s\n\n", c.Front)
 
 	fmt.Print("--> Press enter to show the back side.")
-	_, err := fmt.Scanln()
-	check(err)
+	ReadEnterInput()
 	fmt.Printf("\n%s\n\n", c.Back)
 
 	fmt.Println("--> How difficult was it to remember?")
 	fmt.Printf("--> (1) Again, (2) Hard, (3) Okay, (4) Easy: ")
-	d := 0
-	_, err = fmt.Scanln(&d)
-	check(err)
+	d := ReadNumberInput(1, 4)
 	switch d {
 	case 1:
 		difficulty = AGAIN
