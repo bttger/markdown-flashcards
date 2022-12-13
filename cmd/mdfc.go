@@ -30,6 +30,12 @@ func printHelp() {
 	fmt.Println("\t\tnumber specified in the YAML front matter of the markdown file. Defaults to 20.")
 }
 
+func printDebugHelp(session internal.Session) {
+	if os.Getenv("DEBUG") == "true" {
+		internal.PrintJSON(session)
+	}
+}
+
 const defaultNumberCards = 20
 
 func main() {
@@ -79,13 +85,12 @@ func main() {
 
 	err := session.ReadFile()
 	if err != nil {
+		fmt.Printf("%v\n\n", err)
 		printHelp()
 		return
 	}
 
-	if os.Getenv("DEBUG") == "true" {
-		internal.PrintJSON(session)
-	}
+	printDebugHelp(session)
 
 	if session.ChooseCategories && session.Category == "" {
 		session.ChooseCategory()
@@ -93,4 +98,6 @@ func main() {
 
 	internal.ScrollDownFake()
 	session.Start()
+
+	printDebugHelp(session)
 }
