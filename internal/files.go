@@ -94,6 +94,35 @@ func (s *Session) ReadFile() error {
 	return f.Close()
 }
 
+// WriteFile Writes the file to disk with updated metadata.
+func (s *Session) WriteFile() error {
+	if s.File.Path == "" {
+		return errors.New("no file specified")
+	}
+	f, err := os.Create(s.File.Path)
+	check(err)
+
+	w := bufio.NewWriter(f)
+	lastCategory := ""
+	for _, c := range s.File.Cards {
+		if c.Category != lastCategory {
+			_, err := fmt.Fprintf(w, "# %s\n\n", c.Category)
+			check(err)
+			lastCategory = c.Category
+		}
+		_, err := fmt.Fprintf(w, "## %s\n\n", c.Front)
+		check(err)
+		_, err = fmt.Fprintf(w, "%s\n\n", c.Back)
+		check(err)
+		_, err = fmt.Fprintf(w, "`mdfc;box:%d;due:%s;`\n\n", c.Box, c.Due.Format("2006-01-02"))
+		check(err)
+	}
+
+	err = w.Flush()
+	check(err)
+	return f.Close()
+}
+
 // ChooseCategory Lets the user choose a category from the file's headings.
 func (s *Session) ChooseCategory() {
 	fmt.Println("Please select the category you want to study:")

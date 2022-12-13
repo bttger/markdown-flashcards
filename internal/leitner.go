@@ -68,6 +68,8 @@ func (s *Session) Start() {
 	for len(s.studyQueue) > 0 {
 		card, difficulty := s.flashNextCard()
 		s.updateCard(card, difficulty)
+		err := s.WriteFile()
+		check(err)
 	}
 }
 
