@@ -138,15 +138,16 @@ func (s *Session) assembleStudyQueue() {
 // Waits for the user to press a key to signal how difficult the card was to remember.
 func (s *Session) flashNextCard() (c *Card, difficulty float32) {
 	ClearConsole()
-	fmt.Printf("Cards left for today: %d / %d", len(s.studyQueue), s.NumberCards)
+	fmt.Printf("--- Cards left for today: %d / %d", len(s.studyQueue), s.NumberCards)
 
 	// Dequeue the next card.
 	c = s.studyQueue[0]
 	s.studyQueue = s.studyQueue[1:]
 
 	if s.ShowCategory {
-		fmt.Printf(" \t(%s)", c.Category)
+		fmt.Printf("   (%s)", c.Category)
 	}
+	fmt.Printf(" ---")
 
 	fmt.Printf("\n\n%s\n\n", c.Front)
 
