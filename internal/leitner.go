@@ -14,10 +14,6 @@ const (
 	EASY  = 1.5
 )
 
-// Usually a flashcard is due on a particular date. But if the study set would be less than Session.NumberCards, the
-// due date is ignored up to a certain number of days in the future.
-const maxFutureDaysDue = 2
-
 // boxIntervals are the days between the last review and the next review, and they depend on the box the card is in.
 var boxIntervals = []uint{0, 1, 2, 4, 8, 16, 32}
 
@@ -42,9 +38,13 @@ type Session struct {
 	ChooseCategories                   bool
 	// Number of cards to study. If 0, study all cards.
 	NumberCards uint
-	File        File
-	studyQueue  []*Card
-	currentCard *Card
+	// Usually a flashcard is due on a particular date. But if the study set would be less than Session.NumberCards,
+	// the due date is ignored up to a certain number of days in the future. The cards where the due date was missed
+	// are added to the study set anyway.
+	FutureDaysDue uint
+	File          File
+	studyQueue    []*Card
+	currentCard   *Card
 }
 
 // initMetadata Initialize the metadata of a new card.
@@ -65,7 +65,14 @@ func (c *Card) setMetadata(box uint, due time.Time, category string) {
 // Start Starts the study session.
 func (s *Session) Start() {
 	s.assembleStudyQueue()
+	if len(s.studyQueue) == 0 {
+		fmt.Print("\nLooks like you don't have anything to study today.\n\n")
+		fmt.Println("If you want to learn cards that are scheduled for the next")
+		fmt.Println("few days, use the --future-days-due flag.")
+		return
+	}
 	for len(s.studyQueue) > 0 {
+		ScrollDownFake()
 		card, difficulty := s.flashNextCard()
 		s.updateCard(card, difficulty)
 		err := s.WriteFile()
@@ -75,12 +82,12 @@ func (s *Session) Start() {
 
 // isDue Checks if a card is due. Returns two values: the first is true if the card is due, the second is true if the
 // card is due within the next maxFutureDaysDue days.
-func isDue(c Card) (due, nearDue bool) {
+func (s *Session) isDue(c Card) (due, nearDue bool) {
 	y, m, d := time.Now().Date()
 	today := time.Date(y, m, d, 0, 0, 0, 0, time.UTC)
 	if today.After(c.Due) || today.Equal(c.Due) {
 		due = true
-	} else if nearDay := c.Due.AddDate(0, 0, -maxFutureDaysDue); today.After(nearDay) || today.Equal(nearDay) {
+	} else if nearDay := c.Due.AddDate(0, 0, -int(s.FutureDaysDue)); today.After(nearDay) || today.Equal(nearDay) {
 		nearDue = true
 	}
 	return due, nearDue
@@ -100,7 +107,7 @@ func (s *Session) assembleStudyQueue() {
 		}
 		if s.Category == "" || c.Category == s.Category {
 			// If a category is specified, only study cards of that category.
-			due, nearDue := isDue(*c)
+			due, nearDue := s.isDue(*c)
 			if due {
 				s.studyQueue = append(s.studyQueue, c)
 			}

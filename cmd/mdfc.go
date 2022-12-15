@@ -28,6 +28,11 @@ func printHelp() {
 	fmt.Println("\n\t-n, --number <number_flashcards>")
 	fmt.Println("\t\tLearn n cards during the session. If no number is specified, it will fall back to the")
 	fmt.Println("\t\tnumber specified in the YAML front matter of the markdown file. Defaults to 20.")
+	fmt.Println("\n\t-f, --future-days-due <days>")
+	fmt.Println("\t\tUsually a flashcard is due on a particular date. If you want to learn flashcards")
+	fmt.Println("\t\tbefore they are due, you can specify the number of days in the future when a flashcard")
+	fmt.Println("\t\tshould be due. This might be helpful in the case when you have no cards due for today's")
+	fmt.Println("\t\tlearning session. Cards where the due date was missed will be added anyway. Defaults to 0.")
 }
 
 func printDebugHelp(session internal.Session) {
@@ -62,6 +67,9 @@ func main() {
 		case "-n", "--number":
 			session.NumberCards = defaultNumberCards
 			readOptArg = true
+		case "-f", "--future-days-due":
+			session.FutureDaysDue = 0
+			readOptArg = true
 		default:
 			if readOptArg && i != len(args)-1 {
 				switch args[i-1] {
@@ -75,6 +83,13 @@ func main() {
 						return
 					}
 					session.NumberCards = uint(n)
+				case "-f", "--future-days-due":
+					n, err := strconv.Atoi(arg)
+					if err != nil || n < 0 {
+						fmt.Println("Invalid number of future due days specified.")
+						return
+					}
+					session.FutureDaysDue = uint(n)
 				}
 				readOptArg = false
 			} else {
@@ -91,13 +106,9 @@ func main() {
 	}
 
 	printDebugHelp(session)
-
 	if session.ChooseCategories && session.Category == "" {
 		session.ChooseCategory()
 	}
-
-	internal.ScrollDownFake()
 	session.Start()
-
 	printDebugHelp(session)
 }

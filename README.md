@@ -80,11 +80,16 @@ Options:
 	-n, --number <number_flashcards>
 		Learn n cards during the session. If no number is specified, it will fall back to the
 		number specified in the YAML front matter of the markdown file. Defaults to 20.
+
+	-f, --future-days-due <days>
+		Usually a flashcard is due on a particular date. If you want to learn flashcards
+		before they are due, you can specify the number of days in the future when a flashcard
+		should be due. This might be helpful in the case when you have no cards due for today's
+		learning session. Cards where the due date was missed will be added anyway. Defaults to 0.
 ```
 
 ## Open features
 
-- [ ] Output that there is nothing left to learn for today and print next due date (maybe optionally allow to set the maxFutureDaysDue interactively)
 - [ ] Category selection by first word
 - [ ] Test mode: track and print result at the end
 - [ ] Provide distro packages
