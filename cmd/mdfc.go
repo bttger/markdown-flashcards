@@ -18,7 +18,7 @@ func printHelp() {
 	fmt.Println("\n\t-c, --category <category>")
 	fmt.Println("\t\tShow only flashcards of the specified category. If no category is specified, you can")
 	fmt.Println("\t\tinteractively choose one.")
-	fmt.Println("\t\tIt is possible to specify the category by a chapter number or the categories first word,")
+	fmt.Println("\t\tIt is possible to specify the category by a chapter number or the category's first word,")
 	fmt.Println("\t\te.g. \"2.1\" for \"2.1 Regular Expressions\".")
 	fmt.Println("\n\t-o, --show-category")
 	fmt.Println("\t\tShow the category of each flashcard.")

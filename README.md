@@ -67,7 +67,7 @@ Options:
 	-c, --category <category>
 		Show only flashcards of the specified category. If no category is specified, you can
 		interactively choose one.
-		It is possible to specify the category by a chapter number or the categories first word,
+		It is possible to specify the category by a chapter number or the category's first word,
 		e.g. "2.1" for "2.1 Regular Expressions".
 
 	-o, --show-category
@@ -85,10 +85,10 @@ Options:
 ## Open features
 
 - [ ] Output that there is nothing left to learn for today and print next due date (maybe optionally allow to set the maxFutureDaysDue interactively)
+- [ ] Category selection by first word
+- [ ] Test mode: track and print result at the end
 - [ ] Provide distro packages
 - [ ] Update a card during a session if the user changes the file in the background
-- [ ] Test mode: track and print result at the end
-- [ ] Category selection by first word
 - [ ] Beautify the console output
 
 ## Maybe inspiration for the future
