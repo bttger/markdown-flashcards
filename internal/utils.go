@@ -3,10 +3,12 @@ package internal
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // ClearConsole Moves the cursor to the home position (0,0) and erases everything from cursor to end of screen.
@@ -94,4 +96,21 @@ func CompareCategory(category, input string) bool {
 	category = strings.ToLower(category)
 	input = strings.ToLower(input)
 	return strings.HasPrefix(category, input)
+}
+
+// FindClosestDate finds the closest due date in the future in the given slice of cards.
+// If it contains a date that is before or equal to today, it will return an error.
+func FindClosestDate(cards []Card) (time.Time, error) {
+	y, m, d := time.Now().Date()
+	today := time.Date(y, m, d, 0, 0, 0, 0, time.UTC)
+	var closestDate time.Time
+	for _, c := range cards {
+		if c.Due.Before(today) || c.Due.Equal(today) {
+			return time.Time{}, errors.New("found due date in the past")
+		}
+		if closestDate.IsZero() || c.Due.Before(closestDate) {
+			closestDate = c.Due
+		}
+	}
+	return closestDate, nil
 }

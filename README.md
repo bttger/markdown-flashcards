@@ -64,17 +64,17 @@ Options:
 		Show flashcards in sequential order as in the markdown file. The default behavior is to
 		show flashcards in random order.
 
+	-o, --show-category
+		Show the category of each flashcard.
+
 	-c, --category <category>
 		Show only flashcards of the specified category. A category is a first-level heading in the
 		markdown file. A category can be specified by a case-insensitive prefix of the heading.
 		If no category is specified, you can interactively choose one.
 
-	-o, --show-category
-		Show the category of each flashcard.
-
 	-t, --test <number_flashcards>
 		Test yourself in test mode with random flashcards. If no number is specified, all
-		flashcards will be tested.
+		flashcards will be shown. Possible to combine with -c, --category.
 
 	-n, --number <number_flashcards>
 		Learn n cards during the session. If no number is specified, it will fall back to the
@@ -89,8 +89,8 @@ Options:
 
 ## Open features
 
-- [ ] Test mode: track and print result at the end
 - [ ] Git integration: commit changes to the flashcard file after a learning session
+- [ ] Flag: Reset boxes to 0 for all cards
 - [ ] Provide distro packages
 - [ ] Update a card during a session if the user changes the file in the background
 - [ ] Beautify the console output

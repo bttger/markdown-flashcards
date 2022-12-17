@@ -91,6 +91,10 @@ func (s *Session) ReadFile() error {
 	err = scanner.Err()
 	check(err)
 
+	if len(s.File.Cards) == 0 {
+		return errors.New("no flashcards found in file")
+	}
+
 	return f.Close()
 }
 
