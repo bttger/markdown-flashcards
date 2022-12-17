@@ -123,6 +123,17 @@ func (s *Session) WriteFile() error {
 	return f.Close()
 }
 
+// CheckCategory Checks if the session's category is valid, meaning it is present in the File. If the input is empty, it
+// returns nil according to the CompareCategory function.
+func (s *Session) CheckCategory() error {
+	for _, c := range s.File.Cards {
+		if CompareCategory(c.Category, s.Category) {
+			return nil
+		}
+	}
+	return errors.New("category not found")
+}
+
 // ChooseCategory Lets the user choose a category from the file's headings.
 func (s *Session) ChooseCategory() {
 	fmt.Println("Please select the category you want to study:")

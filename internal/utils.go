@@ -81,3 +81,17 @@ func ReadEnterInput() {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
 }
+
+// CompareCategory compares the category name to the user input and returns true if the input matches with the
+// category according to the following rules:
+// - If the input is empty, it will match with any category.
+// - The category and input get transformed to lowercase.
+// - The input matches the category either if it is equal or if it is a prefix of the category.
+func CompareCategory(category, input string) bool {
+	if input == "" {
+		return true
+	}
+	category = strings.ToLower(category)
+	input = strings.ToLower(input)
+	return strings.HasPrefix(category, input)
+}

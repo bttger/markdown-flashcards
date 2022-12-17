@@ -105,7 +105,7 @@ func (s *Session) assembleStudyQueue() {
 			s.studyQueue = append(s.studyQueue, c)
 			continue
 		}
-		if s.Category == "" || c.Category == s.Category {
+		if CompareCategory(c.Category, s.Category) {
 			// If a category is specified, only study cards of that category.
 			due, nearDue := s.isDue(*c)
 			if due {

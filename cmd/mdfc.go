@@ -16,10 +16,9 @@ func printHelp() {
 	fmt.Println("\t\tShow flashcards in sequential order as in the markdown file. The default behavior is to")
 	fmt.Println("\t\tshow flashcards in random order.")
 	fmt.Println("\n\t-c, --category <category>")
-	fmt.Println("\t\tShow only flashcards of the specified category. If no category is specified, you can")
-	fmt.Println("\t\tinteractively choose one.")
-	fmt.Println("\t\tIt is possible to specify the category by a chapter number or the category's first word,")
-	fmt.Println("\t\te.g. \"2.1\" for \"2.1 Regular Expressions\".")
+	fmt.Println("\t\tShow only flashcards of the specified category. A category is a first-level heading in the")
+	fmt.Println("\t\tmarkdown file. A category can be specified by a case-insensitive prefix of the heading.")
+	fmt.Println("\t\tIf no category is specified, you can interactively choose one.")
 	fmt.Println("\n\t-o, --show-category")
 	fmt.Println("\t\tShow the category of each flashcard.")
 	fmt.Println("\n\t-t, --test <number_flashcards>")
@@ -102,6 +101,12 @@ func main() {
 	if err != nil {
 		fmt.Printf("%v\n\n", err)
 		printHelp()
+		return
+	}
+
+	err = session.CheckCategory()
+	if err != nil {
+		fmt.Println("Invalid category specified.")
 		return
 	}
 

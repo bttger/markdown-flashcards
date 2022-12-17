@@ -65,10 +65,9 @@ Options:
 		show flashcards in random order.
 
 	-c, --category <category>
-		Show only flashcards of the specified category. If no category is specified, you can
-		interactively choose one.
-		It is possible to specify the category by a chapter number or the category's first word,
-		e.g. "2.1" for "2.1 Regular Expressions".
+		Show only flashcards of the specified category. A category is a first-level heading in the
+		markdown file. A category can be specified by a case-insensitive prefix of the heading.
+		If no category is specified, you can interactively choose one.
 
 	-o, --show-category
 		Show the category of each flashcard.
@@ -90,8 +89,8 @@ Options:
 
 ## Open features
 
-- [ ] Category selection by first word
 - [ ] Test mode: track and print result at the end
+- [ ] Git integration: commit changes to the flashcard file after a learning session
 - [ ] Provide distro packages
 - [ ] Update a card during a session if the user changes the file in the background
 - [ ] Beautify the console output
