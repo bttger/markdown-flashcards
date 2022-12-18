@@ -42,6 +42,7 @@ type Session struct {
 	// the due date is ignored up to a certain number of days in the future. The cards where the due date was missed
 	// are added to the study set anyway.
 	FutureDaysDue uint
+	WrapLines     uint
 	File          File
 	studyQueue    []*Card
 	currentCard   *Card
@@ -209,11 +210,19 @@ func (s *Session) flashNextCard() (c *Card, difficulty float32) {
 	}
 	fmt.Printf(" ---")
 
-	fmt.Printf("\n\n%s\n\n", c.Front)
+	front := c.Front
+	if s.WrapLines != 0 {
+		front = WrapLines(front, s.WrapLines)
+	}
+	fmt.Printf("\n\n%s\n\n", front)
 
 	fmt.Print("--> Press enter to show the back side.")
 	ReadEnterInput()
-	fmt.Printf("\n%s\n\n", c.Back)
+	back := c.Back
+	if s.WrapLines != 0 {
+		back = WrapLines(back, s.WrapLines)
+	}
+	fmt.Printf("\n%s\n\n", back)
 
 	fmt.Println("--> How difficult was it to remember?")
 	fmt.Printf("--> (1) Not remembered, (2) Hard, (3) Okay, (4) Easy: ")

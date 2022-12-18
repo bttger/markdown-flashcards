@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -113,4 +114,39 @@ func FindClosestDate(cards []Card) (time.Time, error) {
 		}
 	}
 	return closestDate, nil
+}
+
+// WrapLines wraps the given string into lines of the given length.
+// It will not break words and thus only breaks at whitespace. It assumes that no word in the given string exceeds the
+// requested line length. Lines that start with an indent will be indented by the given indent plus, if the line is
+// a list item, the length of the list item prefix.
+func WrapLines(s string, lineLength uint) string {
+	lineFeedRegex := regexp.MustCompile("\r?\n")
+	indentRegex := regexp.MustCompile(`(?m)^[\-+*\d.\s]+`)
+	lineBreakRegex := regexp.MustCompile(fmt.Sprintf(`(?m)^.{1,%d}\s`, lineLength))
+
+	var result string
+	lines := lineFeedRegex.Split(s, -1)
+	for _, line := range lines {
+		if len(line) == 0 {
+			result += "\n"
+		}
+
+		linePrefix := indentRegex.FindString(line)
+		lineIndent := len(linePrefix)
+		for len(line) > 0 {
+			if uint(len(line)) <= lineLength {
+				result += line + "\n"
+				break
+			} else {
+				idx := lineBreakRegex.FindStringIndex(line)[1]
+				result += line[:idx] + "\n"
+				remainder := line[idx:]
+				paddingFmt := fmt.Sprintf("%%%ds", lineIndent+len(remainder))
+				line = fmt.Sprintf(paddingFmt, remainder)
+			}
+		}
+	}
+
+	return result
 }

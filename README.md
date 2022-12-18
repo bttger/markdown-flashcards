@@ -85,12 +85,18 @@ Options:
 		before they are due, you can specify the number of days in the future when a flashcard
 		should be due. This might be helpful in the case when you have no cards due for today's
 		learning session. Cards where the due date was missed will be added anyway. Defaults to 0.
+
+	-w, --wrap-lines <line_length>
+		Wrap lines to a maximum length. Only breaks lines at whitespaces. Disabled by default.
 ```
 
 ## Open features
 
+The MVP is done so far, and you can study and test yourself. But of course development is never done. Here are some ideas for the future:
+
 - [ ] Git integration: commit changes to the flashcard file after a learning session
 - [ ] Flag: Reset boxes to 0 for all cards
+- [ ] YAML front matter: Specify NumberCards and boxIntervals (the latter's default value probably needs some empirical testing)
 - [ ] Provide distro packages
 - [ ] Update a card during a session if the user changes the file in the background
 - [ ] Beautify the console output

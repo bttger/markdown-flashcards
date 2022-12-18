@@ -32,6 +32,8 @@ func printHelp() {
 	fmt.Println("\t\tbefore they are due, you can specify the number of days in the future when a flashcard")
 	fmt.Println("\t\tshould be due. This might be helpful in the case when you have no cards due for today's")
 	fmt.Println("\t\tlearning session. Cards where the due date was missed will be added anyway. Defaults to 0.")
+	fmt.Println("\n\t-w, --wrap-lines <line_length>")
+	fmt.Println("\t\tWrap lines to a maximum length. Only breaks lines at whitespaces. Disabled by default.")
 }
 
 func printDebugHelp(session internal.Session) {
@@ -69,6 +71,9 @@ func main() {
 		case "-f", "--future-days-due":
 			session.FutureDaysDue = 0
 			readOptArg = true
+		case "-w", "--wrap-lines":
+			session.WrapLines = 0
+			readOptArg = true
 		default:
 			if readOptArg && i != len(args)-1 {
 				switch args[i-1] {
@@ -89,6 +94,13 @@ func main() {
 						return
 					}
 					session.FutureDaysDue = uint(n)
+				case "-w", "--wrap-lines":
+					n, err := strconv.Atoi(arg)
+					if err != nil || n < 0 {
+						fmt.Println("Invalid number of maximum line length specified.")
+						return
+					}
+					session.WrapLines = uint(n)
 				}
 				readOptArg = false
 			} else {
