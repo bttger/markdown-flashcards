@@ -1,18 +1,18 @@
-# Markdown Flashcards (mdfc)
+# Markdown Flashcards (`mdfc`)
 
-Write down your study flashcards in markdown, and use the `mdfc` command to learn them in the terminal with a spaced repetition system.
+Easily create and study flashcards using a markdown file and `mdfc`. The command allows you to learn in the terminal through spaced repetition.
 
-![Screenshot](screenshot.png)
+![Screenshot](demo.png)
 
-If you have worked with Anki before (especially on multiple platforms), you might know what a pain it can be to create flashcards, to tag them, to format them, and also to browse through them. I don't want to get overwhelmed by the tool. I just want to reliably learn stuff that is not simple vocabulary. And what could be easier than writing questions and answers in a markdown file?
+If you have worked with Anki before (especially across multiple platforms), you might know how tedious it can be to create flashcards, to tag them, to format them, and also to browse them. I don't want to get overwhelmed by the tool. I just want to reliably learn stuff that is not simple vocabulary. And what could be easier than writing questions and answers in a markdown file?
 
 ## Features
 
-- Write your flashcards in markdown with reliable formatting
-- Adapted Leitner system with 4 difficulty levels instead of a binary system
-- Study cards from one topic or all topics at once
-- Study cards in sequential or random order
-- Test yourself with a number of random cards in test mode
+- Reliable formatting for your flashcards using markdown
+- An adapted Leitner system with 4 difficulty levels instead of a binary system
+- The ability to study cards from one topic or all topics at once
+- The option to study cards in sequential or random order
+- Test mode, which allows you to test yourself with a number of random cards
 
 ## Markdown Schema
 
@@ -47,7 +47,7 @@ It's the ability (for every client) to view changes to a database immediately af
 
 ## Installation
 
-Go to [releases]() and download the latest version for your platform. (Optional) Move the executable to a directory that is in your `PATH`. On Linux, you can use the following command: `sudo mv mdfc /usr/local/bin`.
+Go to [releases](https://github.com/bttger/markdown-flashcards/releases) and download the latest version for your platform. (Optional) Move the executable to a directory that is in your `PATH`. On Linux, you can use the following command: `sudo mv mdfc /usr/local/bin`.
 
 ```bash
 # Run the executable
@@ -89,6 +89,8 @@ Options:
 	-w, --wrap-lines <line_length>
 		Wrap lines to a maximum length. Only breaks lines at whitespaces. Disabled by default.
 ```
+
+Usually, my default command that I run is `mdfc -o -w 80 ./flashcards.md`. This shows the category of each flashcard and wraps lines at 80 characters.
 
 ## Open features
 
