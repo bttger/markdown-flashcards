@@ -142,7 +142,8 @@ func WrapLines(s string, lineLength uint) string {
 				idx := lineBreakRegex.FindStringIndex(line)[1]
 				result += line[:idx] + "\n"
 				remainder := strings.TrimSpace(line[idx:])
-				paddingFmt := fmt.Sprintf("%%%ds", lineIndent+len(remainder))
+				remainderLen := len([]rune(remainder))
+				paddingFmt := fmt.Sprintf("%%%ds", lineIndent+remainderLen)
 				line = fmt.Sprintf(paddingFmt, remainder)
 			}
 		}
