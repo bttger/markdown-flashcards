@@ -37,7 +37,7 @@ func (s *Session) ReadFile() error {
 	appendCard := func() {
 		c.Back = strings.TrimSpace(c.Back)
 		if c.Front == "" || c.Back == "" {
-			check(errors.New(fmt.Sprint("front or back is empty in line", line-1)))
+			check(errors.New(fmt.Sprint("front or back is empty in line ", line-1)))
 		}
 		s.File.Cards = append(s.File.Cards, c)
 		c = Card{}
