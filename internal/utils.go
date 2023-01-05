@@ -100,7 +100,15 @@ func FindClosestDate(cards []Card) (time.Time, error) {
 // It will not break words and thus only breaks at whitespace. It assumes that no word in the given string exceeds the
 // requested line length. Lines that start with an indent will be indented by the given indent plus, if the line is
 // a list item, the length of the list item prefix.
+//
+// If the lineLength is 0, it will wrap the text depending on the terminal width.
 func WrapLines(s string, lineLength uint) string {
+	if lineLength == 0 {
+		width, _, err := term.GetSize(int(os.Stdin.Fd()))
+		check(err)
+		lineLength = uint(width)
+	}
+
 	lineFeedRegex := regexp.MustCompile("\r?\n")
 	indentRegex := regexp.MustCompile(`(?m)^[\-+*\d.\s]+`)
 	lineBreakRegex := regexp.MustCompile(fmt.Sprintf(`(?m)^.{1,%d}\s`, lineLength))

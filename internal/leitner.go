@@ -210,18 +210,13 @@ func (s *Session) flashNextCard() (c *Card, difficulty float32) {
 	}
 	fmt.Printf(" ---")
 
-	front := c.Front
-	if s.WrapLines != 0 {
-		front = WrapLines(front, s.WrapLines)
-	}
+	front := WrapLines(c.Front, s.WrapLines)
 	fmt.Printf("\n\n%s\n\n", front)
 
 	fmt.Print("--> Press enter to show the back side.")
 	ReadEnterInput()
-	back := c.Back
-	if s.WrapLines != 0 {
-		back = WrapLines(back, s.WrapLines)
-	}
+
+	back := WrapLines(c.Back, s.WrapLines)
 	fmt.Printf("\n%s\n\n", back)
 
 	fmt.Println("--> How difficult was it to remember?")

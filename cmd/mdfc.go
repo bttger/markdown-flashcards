@@ -33,7 +33,7 @@ func printHelp() {
 	fmt.Println("\t\tshould be due. This might be helpful in the case when you have no cards due for today's")
 	fmt.Println("\t\tlearning session. Cards where the due date was missed will be added anyway. Defaults to 0.")
 	fmt.Println("\n\t-w, --wrap-lines <line_length>")
-	fmt.Println("\t\tWrap lines to a maximum length. Only breaks lines at whitespaces. Disabled by default.")
+	fmt.Println("\t\tWrap lines to a maximum length. Only breaks lines at whitespaces. Defaults to terminal width.")
 }
 
 func printDebugHelp(session internal.Session) {

@@ -87,7 +87,7 @@ Options:
 		learning session. Cards where the due date was missed will be added anyway. Defaults to 0.
 
 	-w, --wrap-lines <line_length>
-		Wrap lines to a maximum length. Only breaks lines at whitespaces. Disabled by default.
+		Wrap lines to a maximum length. Only breaks lines at whitespaces. Defaults to terminal width.
 ```
 
 Usually, my default command that I run is `mdfc -o -w 80 ./flashcards.md`. This shows the category of each flashcard and wraps lines at 80 characters.
@@ -108,3 +108,4 @@ The MVP is done so far, and you can study and test yourself. But of course devel
 - https://blog.duolingo.com/how-we-learn-how-you-learn/
 - https://research.duolingo.com/papers/settles.acl16.pdf
 - https://www.pnas.org/doi/10.1073/pnas.1815156116
+- https://github.com/st3v3nmw/obsidian-spaced-repetition
