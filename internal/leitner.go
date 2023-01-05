@@ -87,7 +87,7 @@ func (s *Session) Start() {
 
 	// Start the study session.
 	for len(s.studyQueue) > 0 {
-		ScrollDownFake()
+		ScrollDownScreen()
 		card, difficulty := s.flashNextCard()
 
 		// If in test mode, don't update the metadata.

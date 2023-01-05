@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"golang.org/x/term"
 	"os"
 	"regexp"
 	"strconv"
@@ -19,35 +20,14 @@ func ClearConsole() {
 	}
 }
 
-// ScrollDownFake scrolls down by printing newlines
-func ScrollDownFake() {
-	for i := 0; i < 60; i++ {
+// ScrollDownScreen scrolls down by printing newlines. This can be helpful to prevent overwriting previous console output
+// when clearing the console.
+func ScrollDownScreen() {
+	_, height, err := term.GetSize(int(os.Stdin.Fd()))
+	check(err)
+	for i := 0; i < height; i++ {
 		fmt.Println()
 	}
-}
-
-// ScrollDown Scrolls down until the cursor is at the top of the screen.
-// https://stackoverflow.com/questions/67212319/ansi-escape-code-csi-6n-always-returns-column-1
-// https://en.wikipedia.org/wiki/ANSI_escape_code
-// https://pkg.go.dev/github.com/pkg/term/termios#Tcsetattr
-// TODO flags are missing
-func scrollDown() {
-	var input string
-	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Print("\033[6n")
-	for scanner.Scan() {
-		t := scanner.Text()
-		if t == "R" {
-			break
-		}
-		input += t
-	}
-	row := strings.Split(input, "[")[1]
-	row = strings.Split(row, ";")[0]
-	col := strings.Split(input, ";")[1]
-	col = strings.Split(col, "R")[0]
-	fmt.Println(row, col)
-	fmt.Print("\033[4S")
 }
 
 func check(e error) {
