@@ -21,6 +21,7 @@ type Card struct {
 	Front    string
 	Back     string
 	Category string
+	Id       string
 	// Box number starts at 0
 	Box uint
 	Due time.Time
@@ -52,24 +53,11 @@ type TestModeResults struct {
 	NotRemembered, Hard, Okay, Easy uint
 }
 
-// initMetadata Initialize the metadata of a new card.
-func (c *Card) initMetadata(category string) {
-	c.Category = category
-	c.resetMetadata()
-}
-
 // resetMetadata Resets the metadata of a card. This means setting the box to 0 and the due date to today.
 func (c *Card) resetMetadata() {
 	c.Box = 0
 	y, m, d := time.Now().Date()
 	c.Due = time.Date(y, m, d, 0, 0, 0, 0, time.UTC)
-}
-
-// setMetadata Set the metadata of a card from the file.
-func (c *Card) setMetadata(box uint, due time.Time, category string) {
-	c.Box = box
-	c.Due = due
-	c.Category = category
 }
 
 // Start Starts the study session.
@@ -211,13 +199,13 @@ func (s *Session) flashNextCard() (c *Card, difficulty float32) {
 	fmt.Printf(" ---")
 
 	front := WrapLines(c.Front, s.WrapLines)
-	fmt.Printf("\n\n%s\n\n", front)
+	fmt.Printf("\n\n%s\n", front)
 
 	fmt.Print("--> Press enter to show the back side.")
 	ReadEnterInput()
 
 	back := WrapLines(c.Back, s.WrapLines)
-	fmt.Printf("\n%s\n\n", back)
+	fmt.Printf("\n%s\n", back)
 
 	fmt.Println("--> How difficult was it to remember?")
 	fmt.Printf("--> (1) Not remembered, (2) Hard, (3) Okay, (4) Easy: ")

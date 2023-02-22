@@ -25,8 +25,8 @@ func printHelp() {
 	fmt.Println("\t\tTest yourself in test mode with random flashcards. If no number is specified, all")
 	fmt.Println("\t\tflashcards will be shown. Possible to combine with -c, --category.")
 	fmt.Println("\n\t-n, --number <number_flashcards>")
-	fmt.Println("\t\tLearn n cards during the session. If no number is specified, it will fall back to the")
-	fmt.Println("\t\tnumber specified in the YAML front matter of the markdown file. Defaults to 20.")
+	fmt.Println("\t\tLearn n cards during the session. Set it to 0 to study all cards that are due to today.")
+	fmt.Println("\t\tDefaults to 20.")
 	fmt.Println("\n\t-f, --future-days-due <days>")
 	fmt.Println("\t\tUsually a flashcard is due on a particular date. If you want to learn flashcards")
 	fmt.Println("\t\tbefore they are due, you can specify the number of days in the future when a flashcard")
@@ -109,7 +109,7 @@ func main() {
 		}
 	}
 
-	err := session.ReadFile()
+	err := session.OpenFile()
 	if err != nil {
 		fmt.Printf("%v\n\n", err)
 		printHelp()
