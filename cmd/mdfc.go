@@ -34,6 +34,9 @@ func printHelp() {
 	fmt.Println("\t\tlearning session. Cards where the due date was missed will be added anyway. Defaults to 0.")
 	fmt.Println("\n\t-w, --wrap-lines <line_length>")
 	fmt.Println("\t\tWrap lines to a maximum length. Only breaks lines at whitespaces. Defaults to terminal width.")
+	fmt.Println("\n\t--share-file")
+	fmt.Println("\t\tCreates a copy of the flashcard file with the suffix '.share.md'. This file resets the")
+	fmt.Println("\t\tlearning progress of all flashcards. This is useful if you want to share your flashcards.")
 }
 
 func printDebugHelp(session internal.Session) {
@@ -48,6 +51,7 @@ func main() {
 	args := os.Args[1:]
 	session := internal.Session{NumberCards: defaultNumberCards}
 	filePath := ""
+	createCopyToShare := false
 
 	readOptArg := false
 	for i, arg := range args {
@@ -75,6 +79,8 @@ func main() {
 		case "-w", "--wrap-lines":
 			session.WrapLines = 0
 			readOptArg = true
+		case "--share-file":
+			createCopyToShare = true
 		default:
 			if readOptArg && i != len(args)-1 {
 				switch args[i-1] {
@@ -108,6 +114,16 @@ func main() {
 				filePath = arg
 			}
 		}
+	}
+
+	if createCopyToShare {
+		err := internal.CreateCopyToShare(filePath)
+		if err != nil {
+			fmt.Printf("%v\n\n", err)
+			printHelp()
+			return
+		}
+		return
 	}
 
 	err := session.OpenFile(filePath)

@@ -29,7 +29,9 @@ func initializeMetadata(line string) (updatedLine, id, box, due string) {
 	id = gonanoid.MustGenerate("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", 4)
 	box = "0"
 	due = time.Now().Format("2006-01-02")
-	updatedLine = fmt.Sprintf("%s <!--%s;%s;%s-->", line, id, box, due)
+	// Make sure there are no unrecognized html comment tags present in the line
+	updatedLine = regexp.MustCompile(`\s*<!--.*-->`).ReplaceAllString(line, "")
+	updatedLine = fmt.Sprintf("%s <!--%s;%s;%s-->", updatedLine, id, box, due)
 	return
 }
 
@@ -192,4 +194,40 @@ func (s *Session) ChooseCategory() {
 	fmt.Print("Your choice: ")
 	choice := ReadNumberInput(1, len(categories))
 	s.Category = categories[choice-1]
+}
+
+// CreateCopyToShare Creates a copy of the file in the current directory, with the suffix '.share.md'. It reads
+// each line, resets the metadata, and writes the line to the new file.
+func CreateCopyToShare(path string) error {
+	if path == "" {
+		return errors.New("no file specified")
+	}
+	absPath, err := filepath.Abs(path)
+	check(err)
+	f, err := os.Open(absPath)
+	if err != nil {
+		return errors.New("file not found")
+	}
+
+	// Create the new file
+	newPath := strings.TrimSuffix(absPath, ".md") + ".share.md"
+	newF, err := os.Create(newPath)
+	check(err)
+
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.HasPrefix(line, "## ") || strings.HasPrefix(line, "### ") || strings.HasPrefix(line, "#### ") {
+			line, _, _, _ = initializeMetadata(line)
+		}
+		_, err := newF.WriteString(line + "\n")
+		check(err)
+	}
+	err = newF.Sync()
+	check(err)
+	err = f.Close()
+	check(err)
+	err = newF.Close()
+	check(err)
+	return nil
 }
