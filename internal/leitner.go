@@ -21,6 +21,7 @@ type Card struct {
 	Front    string
 	Back     string
 	Category string
+	Id       string
 	// Box number starts at 0
 	Box uint
 	Due time.Time
@@ -52,26 +53,6 @@ type TestModeResults struct {
 	NotRemembered, Hard, Okay, Easy uint
 }
 
-// initMetadata Initialize the metadata of a new card.
-func (c *Card) initMetadata(category string) {
-	c.Category = category
-	c.resetMetadata()
-}
-
-// resetMetadata Resets the metadata of a card. This means setting the box to 0 and the due date to today.
-func (c *Card) resetMetadata() {
-	c.Box = 0
-	y, m, d := time.Now().Date()
-	c.Due = time.Date(y, m, d, 0, 0, 0, 0, time.UTC)
-}
-
-// setMetadata Set the metadata of a card from the file.
-func (c *Card) setMetadata(box uint, due time.Time, category string) {
-	c.Box = box
-	c.Due = due
-	c.Category = category
-}
-
 // Start Starts the study session.
 func (s *Session) Start() {
 	testModeResults := TestModeResults{}
@@ -81,7 +62,7 @@ func (s *Session) Start() {
 		fmt.Print("\nLooks like you don't have anything to study today.\n\n")
 		fmt.Println("If you want to learn cards that are scheduled for the next")
 		fmt.Print("few days, use the --future-days-due flag.\n\n")
-		s.PrintNextDueDate()
+		s.printNextDueDate()
 		return
 	}
 
@@ -104,8 +85,6 @@ func (s *Session) Start() {
 			}
 		} else {
 			s.updateCard(card, difficulty)
-			err := s.WriteFile()
-			check(err)
 		}
 	}
 
@@ -118,10 +97,10 @@ func (s *Session) Start() {
 		fmt.Printf("Easy:\t\t%d\n", testModeResults.Easy)
 	}
 	fmt.Println("You're done with your session!")
-	s.PrintNextDueDate()
+	s.printNextDueDate()
 }
 
-func (s *Session) PrintNextDueDate() {
+func (s *Session) printNextDueDate() {
 	nextSession, err := FindClosestDate(s.File.Cards)
 	if err != nil {
 		fmt.Println("Please note: You still have cards due to today.")
@@ -211,13 +190,13 @@ func (s *Session) flashNextCard() (c *Card, difficulty float32) {
 	fmt.Printf(" ---")
 
 	front := WrapLines(c.Front, s.WrapLines)
-	fmt.Printf("\n\n%s\n\n", front)
+	fmt.Printf("\n\n%s\n", front)
 
 	fmt.Print("--> Press enter to show the back side.")
 	ReadEnterInput()
 
 	back := WrapLines(c.Back, s.WrapLines)
-	fmt.Printf("\n%s\n\n", back)
+	fmt.Printf("\n%s\n", back)
 
 	fmt.Println("--> How difficult was it to remember?")
 	fmt.Printf("--> (1) Not remembered, (2) Hard, (3) Okay, (4) Easy: ")
@@ -235,12 +214,14 @@ func (s *Session) flashNextCard() (c *Card, difficulty float32) {
 	return c, difficulty
 }
 
-// updateCard Updates the card's metadata according to the user's input. This method may change the box and due date.
-// It may also add it back to the study queue if the answer was not remembered.
+// updateCard Updates the card's metadata (box and due date) according to the user's input.
+// It may also add the card back to the study queue if the answer was not remembered.
 func (s *Session) updateCard(c *Card, difficulty float32) {
 	if difficulty == NotRemembered {
-		// Move the card to the first box and add it to the study queue.
-		c.resetMetadata()
+		// Move the card to the first box, reset the due date to today, and add it back to the study queue.
+		c.Box = 0
+		y, m, d := time.Now().Date()
+		c.Due = time.Date(y, m, d, 0, 0, 0, 0, time.UTC)
 		s.studyQueue = append(s.studyQueue, c)
 	} else {
 		// Move the card to the next box but only if it is not in the last box and the answer was not Hard.
@@ -255,4 +236,5 @@ func (s *Session) updateCard(c *Card, difficulty float32) {
 		}
 		c.Due = time.Date(y, m, d, 0, 0, 0, 0, time.UTC).AddDate(0, 0, daysInFuture)
 	}
+	s.updateCardInFile(c)
 }

@@ -25,8 +25,8 @@ func printHelp() {
 	fmt.Println("\t\tTest yourself in test mode with random flashcards. If no number is specified, all")
 	fmt.Println("\t\tflashcards will be shown. Possible to combine with -c, --category.")
 	fmt.Println("\n\t-n, --number <number_flashcards>")
-	fmt.Println("\t\tLearn n cards during the session. If no number is specified, it will fall back to the")
-	fmt.Println("\t\tnumber specified in the YAML front matter of the markdown file. Defaults to 20.")
+	fmt.Println("\t\tLearn n cards during the session. Set it to 0 to study all cards that are due to today.")
+	fmt.Println("\t\tDefaults to 20.")
 	fmt.Println("\n\t-f, --future-days-due <days>")
 	fmt.Println("\t\tUsually a flashcard is due on a particular date. If you want to learn flashcards")
 	fmt.Println("\t\tbefore they are due, you can specify the number of days in the future when a flashcard")
@@ -34,6 +34,9 @@ func printHelp() {
 	fmt.Println("\t\tlearning session. Cards where the due date was missed will be added anyway. Defaults to 0.")
 	fmt.Println("\n\t-w, --wrap-lines <line_length>")
 	fmt.Println("\t\tWrap lines to a maximum length. Only breaks lines at whitespaces. Defaults to terminal width.")
+	fmt.Println("\n\t--share-file")
+	fmt.Println("\t\tCreates a copy of the flashcard file with the suffix '.share.md'. This file resets the")
+	fmt.Println("\t\tlearning progress of all flashcards. This is useful if you want to share your flashcards.")
 }
 
 func printDebugHelp(session internal.Session) {
@@ -47,6 +50,8 @@ const defaultNumberCards = 20
 func main() {
 	args := os.Args[1:]
 	session := internal.Session{NumberCards: defaultNumberCards}
+	filePath := ""
+	createCopyToShare := false
 
 	readOptArg := false
 	for i, arg := range args {
@@ -74,6 +79,8 @@ func main() {
 		case "-w", "--wrap-lines":
 			session.WrapLines = 0
 			readOptArg = true
+		case "--share-file":
+			createCopyToShare = true
 		default:
 			if readOptArg && i != len(args)-1 {
 				switch args[i-1] {
@@ -104,12 +111,22 @@ func main() {
 				}
 				readOptArg = false
 			} else {
-				session.File = internal.NewFile(arg)
+				filePath = arg
 			}
 		}
 	}
 
-	err := session.ReadFile()
+	if createCopyToShare {
+		err := internal.CreateCopyToShare(filePath)
+		if err != nil {
+			fmt.Printf("%v\n\n", err)
+			printHelp()
+			return
+		}
+		return
+	}
+
+	err := session.OpenFile(filePath)
 	if err != nil {
 		fmt.Printf("%v\n\n", err)
 		printHelp()
