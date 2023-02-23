@@ -127,7 +127,11 @@ func WrapLines(s string, lineLength uint) string {
 				result += line + "\n"
 				break
 			} else {
-				idx := lineBreakRegex.FindStringIndex(line)[1]
+				idx := len(line)
+				idxs := lineBreakRegex.FindStringIndex(line)
+				if idxs != nil {
+					idx = idxs[1]
+				}
 				result += line[:idx] + "\n"
 				remainder := strings.TrimSpace(line[idx:])
 				remainderLen := len([]rune(remainder))
