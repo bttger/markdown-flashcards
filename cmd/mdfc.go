@@ -47,6 +47,7 @@ const defaultNumberCards = 20
 func main() {
 	args := os.Args[1:]
 	session := internal.Session{NumberCards: defaultNumberCards}
+	filePath := ""
 
 	readOptArg := false
 	for i, arg := range args {
@@ -104,12 +105,12 @@ func main() {
 				}
 				readOptArg = false
 			} else {
-				session.File = internal.NewFile(arg)
+				filePath = arg
 			}
 		}
 	}
 
-	err := session.OpenFile()
+	err := session.OpenFile(filePath)
 	if err != nil {
 		fmt.Printf("%v\n\n", err)
 		printHelp()

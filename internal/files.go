@@ -14,15 +14,7 @@ import (
 	"time"
 )
 
-func NewFile(path string) File {
-	if path == "" {
-		check(errors.New("no file specified"))
-	}
-	absPath, err := filepath.Abs(path)
-	check(err)
-	return File{Path: absPath, BoxIntervals: boxIntervals}
-}
-
+// getMetadata extracts the metadata (ID, box, due date; embedded in html comment tag) from a line.
 func getMetadata(line string) (id, box, due string) {
 	re := regexp.MustCompile(`<!--\s*(.{4});(\d);(\d{4}-\d{2}-\d{2})\s*-->`)
 	matches := re.FindStringSubmatch(line)
@@ -32,6 +24,7 @@ func getMetadata(line string) (id, box, due string) {
 	return
 }
 
+// initializeMetadata initializes the metadata (ID, box, due date; embedded in html comment tag) for a new card.
 func initializeMetadata(line string) (updatedLine, id, box, due string) {
 	id = gonanoid.MustGenerate("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", 4)
 	box = "0"
@@ -40,6 +33,7 @@ func initializeMetadata(line string) (updatedLine, id, box, due string) {
 	return
 }
 
+// generateNewId generates a new id for a card and updates the line with the new id.
 func generateNewId(line string) (updatedLine, id string) {
 	re := regexp.MustCompile(`<!--\s*(.{4});(\d);(\d{4}-\d{2}-\d{2})\s*-->`)
 	id = gonanoid.MustGenerate("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", 4)
@@ -47,6 +41,7 @@ func generateNewId(line string) (updatedLine, id string) {
 	return
 }
 
+// extractQuestion extracts the question from a second-level (or third, etc.) markdown header.
 func extractQuestion(line string) string {
 	re := regexp.MustCompile(`##\s+(.*)<!--`)
 	matches := re.FindStringSubmatch(line)
@@ -56,6 +51,7 @@ func extractQuestion(line string) string {
 	return ""
 }
 
+// getCardFromLine extracts the card data from a second-level (or third, etc.) markdown header.
 func getCardFromLine(line, category string) (card Card) {
 	card.Category = category
 	id, box, due := getMetadata(line)
@@ -70,7 +66,14 @@ func getCardFromLine(line, category string) (card Card) {
 }
 
 // OpenFile Reads a markdown file containing flashcards and initializes the Session.
-func (s *Session) OpenFile() error {
+func (s *Session) OpenFile(path string) error {
+	if path == "" {
+		return errors.New("no file specified")
+	}
+	absPath, err := filepath.Abs(path)
+	check(err)
+	s.File = File{Path: absPath, BoxIntervals: boxIntervals}
+
 	if s.File.Path == "" {
 		return errors.New("no file specified")
 	}
@@ -151,33 +154,15 @@ func (s *Session) OpenFile() error {
 	return nil
 }
 
-// WriteFile Writes the file to disk with updated metadata.
-func (s *Session) WriteFile() error {
-	if s.File.Path == "" {
-		return errors.New("no file specified")
-	}
-	f, err := os.Create(s.File.Path)
+// updateCardInFile Updates the card's metadata in the file.
+func (s *Session) updateCardInFile(c *Card) {
+	data, err := os.ReadFile(s.File.Path)
 	check(err)
-
-	w := bufio.NewWriter(f)
-	lastCategory := ""
-	for _, c := range s.File.Cards {
-		if c.Category != lastCategory {
-			_, err := fmt.Fprintf(w, "# %s\n\n", c.Category)
-			check(err)
-			lastCategory = c.Category
-		}
-		_, err := fmt.Fprintf(w, "## %s\n\n", c.Front)
-		check(err)
-		_, err = fmt.Fprintf(w, "%s\n\n", c.Back)
-		check(err)
-		_, err = fmt.Fprintf(w, "`mdfc;box:%d;due:%s;`\n\n", c.Box, c.Due.Format("2006-01-02"))
-		check(err)
-	}
-
-	err = w.Flush()
+	md := string(data)
+	re := regexp.MustCompile(fmt.Sprintf(`<!--\s*%s;\d;\d{4}-\d{2}-\d{2}\s*-->`, c.Id))
+	md = re.ReplaceAllString(md, fmt.Sprintf("<!--%s;%d;%s-->", c.Id, c.Box, c.Due.Format("2006-01-02")))
+	err = os.WriteFile(s.File.Path, []byte(md), 0644)
 	check(err)
-	return f.Close()
 }
 
 // CheckCategory Checks if the session's category is valid, meaning it is present in the File. If the input is empty, it
