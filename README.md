@@ -95,6 +95,10 @@ Options:
 
 	-w, --wrap-lines <line_length>
 		Wrap lines to a maximum length. Only breaks lines at whitespaces. Defaults to terminal width.
+
+	--share-file
+		Creates a copy of the flashcard file with the suffix '.share.md'. This file resets the
+		learning progress of all flashcards. This is useful if you want to share your flashcards.
 ```
 
 Usually, my default command that I run is `mdfc -o -w 100 ./flashcards.md`. This shows the category of each flashcard and wraps lines at 100 characters.
