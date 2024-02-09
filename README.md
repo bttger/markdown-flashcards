@@ -16,6 +16,8 @@ If you have worked with Anki before (especially across multiple platforms), you 
 - The option to study cards in sequential or random order
 - Test mode, which allows you to test yourself with a number of random cards
 
+> You can use `mdfc` on your Android Smartphone with Termux: Install Termux via F-Droid or the GitHub [Releases](https://github.com/termux/termux-app/releases) and then run `pkg install markdown-flashcards`.
+
 ## Markdown Schema
 
 `mdfc` automatically creates and updates the metadata of your flashcards. The following schema shows how the metadata is stored in the file:
