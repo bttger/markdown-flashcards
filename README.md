@@ -54,7 +54,7 @@ The same applies to the send. An application only sees the broadcast call but th
 Make sure you have Go installed.
 
 - Clone this repository (`git clone git@github.com:bttger/markdown-flashcards.git`)
-- Build the executable (`cd markdown-flashcards && go build -o mdfc`)
+- Build the executable (`cd markdown-flashcards && go build -o mdfc ./cmd/mdfc.go`)
 - (Optional) Move the executable to a directory that is in your `PATH`. On Linux, you can use the following command: `sudo mv mdfc /usr/local/bin`.
 - You can now run the command `mdfc` (or `./mdfc` if you have not added the executable to your environment) in your terminal.
 
