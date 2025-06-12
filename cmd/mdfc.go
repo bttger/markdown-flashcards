@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/bttger/markdown-flashcards/internal"
 	"os"
 	"strconv"
+
+	"github.com/bttger/markdown-flashcards/internal"
 )
 
 func printHelp() {

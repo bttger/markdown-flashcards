@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"golang.org/x/term"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	"golang.org/x/term"
 )
 
 // ClearConsole Moves the cursor to the home position (0,0) and erases everything from cursor to end of screen.
