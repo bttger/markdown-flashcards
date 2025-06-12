@@ -23,7 +23,7 @@ func ClearConsole() {
 // ScrollDownScreen scrolls down by printing newlines. This can be helpful to prevent overwriting previous console output
 // when clearing the console.
 func ScrollDownScreen() {
-	_, height, err := term.GetSize(int(os.Stdin.Fd()))
+	_, height, err := term.GetSize(int(os.Stdout.Fd()))
 	check(err)
 	for i := 0; i < height; i++ {
 		fmt.Println()
@@ -104,7 +104,7 @@ func FindClosestDate(cards []Card) (time.Time, error) {
 // If the lineLength is 0, it will wrap the text depending on the terminal width.
 func WrapLines(s string, lineLength uint) string {
 	if lineLength == 0 {
-		width, _, err := term.GetSize(int(os.Stdin.Fd()))
+		width, _, err := term.GetSize(int(os.Stdout.Fd()))
 		check(err)
 		lineLength = uint(width)
 	}
