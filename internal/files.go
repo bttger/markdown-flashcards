@@ -7,12 +7,12 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
 
 	gonanoid "github.com/matoous/go-nanoid"
-	"golang.org/x/exp/slices"
 )
 
 // getMetadata extracts the metadata (ID, box, due date; embedded in html comment tag) from a line.
